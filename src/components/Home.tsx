@@ -14,18 +14,26 @@ const FETCH_ALL_COUNTRY_NAME = gql`
   }
 `;
 
+type Countries = {
+  capital: string;
+  emoji: string;
+  name: string;
+  code: string;
+}[];
+
 const Home = () => {
-  const { data, error, loading } = useQuery(FETCH_ALL_COUNTRY_NAME);
+  const { data, error, loading } = useQuery<{ countries: Countries }>(
+    FETCH_ALL_COUNTRY_NAME
+  );
   const [localSearchTerm, setLocalSearchTerm] = useState("");
   const navigate = useNavigate();
-  // console.log(data);
+  console.log("countriesdata", data);
 
-  const filteredCountry = data?.countries.filter(
-    (country: { name: string }) => {
+  const filteredCountry =
+    data?.countries.filter((country) => {
       const regex = new RegExp(localSearchTerm, "i");
       return regex.test(country.name);
-    }
-  );
+    }) ?? [];
   const handleLocalSearch = (event: {
     target: { value: React.SetStateAction<string> };
   }) => {
@@ -52,25 +60,18 @@ const Home = () => {
           {filteredCountry.length === 0 && (
             <h2>No Such Country. Please try again!</h2>
           )}
-          {filteredCountry.map(
-            (country: {
-              code: string;
-              name: string;
-              emoji: string;
-              capital: string;
-            }) => (
-              <div
-                className="country-item"
-                key={country.code}
-                onClick={() => handleClick(country.code)}
-              >
-                <h2>
-                  {country.name} {country.emoji}
-                </h2>
-                <h4>{country.capital}</h4>
-              </div>
-            )
-          )}
+          {filteredCountry.map((country) => (
+            <div
+              className="country-item"
+              key={country.code}
+              onClick={() => handleClick(country.code)}
+            >
+              <h2>
+                {country.name} {country.emoji}
+              </h2>
+              <h4>{country.capital}</h4>
+            </div>
+          ))}
         </>
       )}
     </div>
