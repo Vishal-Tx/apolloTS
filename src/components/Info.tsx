@@ -19,6 +19,21 @@ const FETCH_COUNTRY_DETAILS = gql`
   }
 `;
 
+type Country = {
+  name: string;
+  code: string;
+  emoji: string;
+  native: string;
+  population: number;
+  timezone: string;
+  capital: string;
+  languages: {
+    name: string;
+    code: string;
+  }[];
+  currency: string;
+};
+
 const Info = () => {
   const { search } = useParams();
   const { data, loading, error } = useQuery<{ country: Country }>(
